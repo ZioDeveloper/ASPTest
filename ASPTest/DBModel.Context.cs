@@ -7,16 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASPTest.Models
+namespace ASPTest
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DB_A467AE_ZioDeveloperEntities : DbContext
+    public partial class DatabaseContext : DbContext
     {
-        public DB_A467AE_ZioDeveloperEntities()
-            : base("name=DB_A467AE_ZioDeveloperEntities")
+        public DatabaseContext()
+            : base("name=DatabaseContext")
         {
         }
     
@@ -25,6 +25,6 @@ namespace ASPTest.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<TestTable> TestTable { get; set; }
+        public virtual DbSet<Utente> Utenti { get; set; }
     }
 }

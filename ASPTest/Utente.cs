@@ -7,14 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASPTest.Models
+namespace ASPTest
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class TestTable
+    public partial class Utente
     {
-        public int ID { get; set; }
-        public string Descr { get; set; }
+        public System.Guid UserID { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string PasswordSalt { get; set; }
     }
 }

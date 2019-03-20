@@ -9,9 +9,8 @@ namespace ASPTest.Controllers
     public class LoginController : Controller
     {
         // GET: Login
-        public ActionResult Index()
+        public ActionResult Login()
         {
-            ViewBag.Message = "Sorry, not yet implmented";
             return View();
         }
     }
