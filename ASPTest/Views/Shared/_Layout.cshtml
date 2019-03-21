@@ -28,13 +28,17 @@
                     @*Authentication*@
                     @if (Request.IsAuthenticated)
                     {
-                        <strong>@Html.Encode(User.Identity.Name)</strong>
-                        <li>@Html.ActionLink("Disconnetti", "Logout", "Utente")</li>
+                        @*@Html.Encode(User.Identity.Name)*@
+                        <li>@Html.ActionLink("Logout", "Logout", "Utente")</li>
+                        if (User.Identity.Name.ToUpper() == "ADMIN")
+                        {
+                            <li>@Html.ActionLink("Administration", "Index", "Admin")</li>
+                        }
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Login", "Login", "Utente")</li>
-                        <li>@Html.ActionLink("Register", "Registrazione", "Utente")</li>
+                            <li>@Html.ActionLink("Login", "Login", "Utente")</li>
+                            <li>@Html.ActionLink("Register", "Registrazione", "Utente")</li>
                     }
                 </ul>
             </div>

@@ -23,7 +23,7 @@ namespace ASPTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(UtenteLoginModel utente)
+        public ActionResult Login(UtenteLoginModel utente, string ReturnUrl)
         {
             if(ModelState.IsValid)
             {
@@ -31,7 +31,10 @@ namespace ASPTest.Controllers
                 if(username != String.Empty)
                 {
                     FormsAuthentication.SetAuthCookie(username, false);
-                    return RedirectToAction("Index", "Home");
+                    if(ReturnUrl == null)
+                        return RedirectToAction("Index", "HomeInternal");
+                    else
+                        return RedirectToLocal(ReturnUrl);
                 }
                 else
                 {
@@ -39,6 +42,14 @@ namespace ASPTest.Controllers
                 }
             }
             return View(utente);
+        }
+
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

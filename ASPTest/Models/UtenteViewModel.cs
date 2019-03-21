@@ -11,7 +11,7 @@ namespace ASPTest.Models
     {
         [Required]
         [EmailAddress]
-        [StringLength(150,ErrorMessage = "Max 150 caratteri... ")]
+        [StringLength(150,ErrorMessage = "Max 150 char... ")]
         public string Email { get; set; }
         
         [Required]
@@ -25,11 +25,11 @@ namespace ASPTest.Models
     {
         [Required]
         [EmailAddress]
-        [StringLength(150, ErrorMessage = "Max 150 caratteri... ")]
+        [StringLength(150, ErrorMessage = "Max 150 char... ")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(20, ErrorMessage = "Max 20 caratteri... ")]
+        [StringLength(20, ErrorMessage = "Max 20 char... ")]
         public string UserName { get; set; }
 
         [Required]
@@ -40,7 +40,7 @@ namespace ASPTest.Models
         [Required]
         [DataType(DataType.Password)]
         [StringLength(20, MinimumLength = 6)]
-        [Display(Name = "Conferma password")]
+        [Display(Name = "Confirm password")]
         [Compare("Password")]
         public string RePassword { get; set; }
     }

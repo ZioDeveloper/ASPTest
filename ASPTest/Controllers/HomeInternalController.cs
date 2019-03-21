@@ -6,10 +6,10 @@ using System.Web.Mvc;
 
 namespace ASPTest.Controllers
 {
-    public class LoginController : Controller
+    public class HomeInternalController : Controller
     {
-        // GET: Login
-        public ActionResult Login()
+        // GET: HomeInternal
+        public ActionResult Index()
         {
             return View();
         }
