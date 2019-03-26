@@ -231,6 +231,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Fatture Energia  26_03_2019 16_39_10.mp4" />
     <Content Include="Content\Guru_meditation.gif" />
     <Content Include="DBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -287,6 +288,12 @@
     <Content Include="Views\HomeInternal\Index.cshtml" />
     <Content Include="Views\News\Create.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\HomeInternal\SQLCode_01.cshtml" />
+    <Content Include="Views\HomeInternal\SQLCode_02.cshtml" />
+    <Content Include="Views\HomeInternal\SQLCode_03.cshtml" />
+    <Content Include="Views\HomeInternal\SQLCode_04.cshtml" />
+    <Content Include="Views\HomeInternal\IndexSQL.cshtml" />
+    <Content Include="Views\HomeInternal\IndexCSharp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

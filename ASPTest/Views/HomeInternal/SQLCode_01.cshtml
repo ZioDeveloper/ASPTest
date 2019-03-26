@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Esempi codice SQL";
+}
+
+<h2>T-SQL</h2>
+
+@Html.ActionLink("Return to main...", "IndexSQL", "HomeInternal") - Reorganize all indexes in a database
+<br />
+<br>
+<div class="jumbotron">
+    <div class="code">
+        <pre>/*	Riorganizzazione di tutte le tabelle di un database 
+*	
+*/
+
+USE ["MioNomeDB"] --Mettere qui nome DB di cui si vuole riorganizzare indici
+
+/* Lasciare cosi come è... */
+BEGIN
+	/* Dichiaro variabili*/
+	DECLARE @@TableName varchar(255) 
+	DECLARE TableCursor CURSOR FOR 
+	
+
+	-- Recupero i nomi di tutte le tabelle asociate al DB
+	SELECT TABLE_NAME FROM information_schema.tables 
+	WHERE TABLE_TYPE  = 'base table' 
+	AND TABLE_NAME NOT LIKE '%TEMP%'
+	ORDER BY TABLE_NAME
+
+	-- Inizio ciclo sui tabelle
+	OPEN TableCursor 
+	
+	PRINT '***********************'
+	PRINT '***  Started ***'
+	PRINT '***********************'
+
+
+	FETCH NEXT FROM TableCursor INTO @@TableName 
+	WHILE @@FETCH_STATUS = 0	
+	BEGIN 
+		/* Sintassi del comando :
+		*  DBCC DBREINDEX (NomeTabella,indice da riorganizzare , FILL FACTOR )
+		*  in questo script :
+		*  1 lasciamo blank il secondo parametro, che vuol dire : riorganizza tutti gli indici della tabella
+		*  2 lasciamo 0 come ultimo parametro.
+		*    Con questo dico di NON CAMBIARE il FILL FACTOR esistente, 
+		*	 ed è così che deve fare , altrimenti lo cambia indiscriminatamente su tutte le tabelle,
+		*	 il che non può che determinare un impoverimento delle prestazioni
+		*	 
+		*	 Pro memoria : 
+		*	 1 Per tabelle che non cambiano dei frequente , si sceglie un  FILL FACTOR di default (100)
+		*	 2 Per tabelle con grande quantità di dati che cambiano , ( INSERT UPDATE DELTE ) si usa 
+		*	 FILL FACTOR da 70 a 90 ( Interconsult tipicamente 90 ) MA
+		*	 3 Per tabelle con grande quantità di dati che cambiano , ma che hanno l'indice cluster su 
+		*	 primary key, si usa FILL FACTOR = 100 
+ 
+		* 
+		*/
+		DBCC DBREINDEX(@@TableName,'',0) -- NON MODIFICARE !
+		PRINT @@TableName
+		FETCH NEXT FROM TableCursor INTO @@TableName 
+	END 
+
+	CLOSE TableCursor
+	DEALLOCATE TableCursor
+	PRINT ''
+	PRINT '***********************'
+	PRINT '***  Completed ! ***'
+	PRINT '***********************'
+END	
+</pre>
+    </div>
+</div>
+

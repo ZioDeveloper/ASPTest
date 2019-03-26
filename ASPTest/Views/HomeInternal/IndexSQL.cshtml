@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Index SQL";
+}
+
+<h2>T-SQL</h2>
+@Html.ActionLink("Return to main...", "Index", "HomeInternal") 
+<br /><br />
+
+<div >
+    <b>SQL Examples : </b>
+    <br /><br />  CRUD
+    <ul>
+
+        <li>
+            @Html.ActionLink("A long query to write......", "SQLCode_04", "HomeInternal") - Don't blame me , I was obliged to write this monster :)'
+        </li>
+        @*<li>
+                @Html.ActionLink("Statistiscs", "SQLCode_04", "HomeInternal") - Reorganize all statistics in a database
+            </li>*@
+    </ul>
+    <br />Administrative tools
+    <ul>
+
+        <li>
+            @Html.ActionLink("Indexes", "SQLCode_01", "HomeInternal") - Reorganize all indexes in a database
+        </li>
+        <li>
+            @Html.ActionLink("Statistiscs", "SQLCode_02", "HomeInternal") - Reorganize all statistics in a database
+        </li>
+    </ul>
+
+    <br /> Functions
+    <ul>
+
+        <li>
+            @Html.ActionLink("Remaining hours...", "SQLCode_03", "HomeInternal") - Count the remaining hours, removing non-working hours and holidays
+        </li>
+        @*<li>
+                @Html.ActionLink("Statistiscs", "SQLCode_04", "HomeInternal") - Reorganize all statistics in a database
+            </li>*@
+    </ul>
+    <br /> Stored procedures
+    <ul>
+
+        <li>
+            @Html.ActionLink("A stored procedure for FCA", "SQLCode_04", "HomeInternal") - Execute a conditional update over a detail table...
+        </li>
+        @*<li>
+                @Html.ActionLink("Statistiscs", "SQLCode_04", "HomeInternal") - Reorganize all statistics in a database
+            </li>*@
+    </ul>
+</div>
+

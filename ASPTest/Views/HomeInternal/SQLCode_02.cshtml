@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "SQLCode_02";
+}
+
+<h2>T-SQL</h2>
+
+@Html.ActionLink("Return to main...", "IndexSQL", "HomeInternal") - Reorganize all statistics in a database
+<br />
+<br>
+<div class="code">
+    <pre>/*	Riorganizzazione di tutte le statistice su tabelle. 
+*	
+*/
+
+USE ["NomeDB"] 
+
+/* Lasciare cosi come è... */
+BEGIN
+	/* Dichiaro variabili*/
+	DECLARE @@TableName varchar(255)
+	DECLARE @@SQL NVARCHAR(MAX) 
+	DECLARE TableCursor CURSOR FOR 
+	
+
+	-- Recupero i nomi di tutte le tabelle associate al DB
+	SELECT table_name FROM information_schema.tables 
+	WHERE table_type = 'base table'
+	AND TABLE_NAME NOT LIKE '%TEMP%'
+	ORDER BY table_name  
+
+	-- Inizio ciclo sui tabelle
+	OPEN TableCursor 
+
+	FETCH NEXT FROM TableCursor INTO @@TableName 
+	WHILE @@FETCH_STATUS = 0	
+	BEGIN 
+		SET @@SQL = N'UPDATE STATISTICS ' + @@TableName
+		EXEC sp_executesql @@SQL
+		PRINT @@SQL
+		FETCH NEXT FROM TableCursor INTO @@TableName 
+	END 
+
+	CLOSE TableCursor
+	DEALLOCATE TableCursor
+END	
+</pre>
+</div>
