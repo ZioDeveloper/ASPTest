@@ -1,0 +1,192 @@
+﻿
+@{
+    ViewBag.Title = "SQLCode_03";
+}
+
+<h2>T-SQL</h2>
+
+@Html.ActionLink("Return to main...", "IndexSQL", "HomeInternal") - Execute a conditional update over a detail table...
+<br />
+<br>
+<div class="code">
+    <pre>USE [CSMS]
+GO
+/****** Object:  StoredProcedure [dbo].[Update_SD_Dettaglio]    Script Date: 26/03/2019 15:49:13 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+ALTER PROCEDURE [dbo].[Update_SD_Dettaglio]
+  @@IDScheda INT,
+  @@IDDettaglio INT,
+  @@IDTipoScheda INT,
+  @@CedIDOperatore INT,
+  @@CedTarga VARCHAR(20),
+  @@DeaID INT,
+  @@RDTData DATETIME,
+  @@Note VARCHAR(255),
+  @@FConsegnaFuoriOrario BIT, 
+  @@FRichiestaIntervento BIT,
+  @@FPeritoIntervenuto BIT,
+  @@FAllegataCopiaPerizia BIT,
+  @@FVenditaAlMeglio BIT,
+  @@IDParte INT,
+  @@IDTipoDanno TINYINT,
+  @@CodPosizione VARCHAR(2),
+  @@IDPosizioneDanno TINYINT,
+  @@CodSeverita VARCHAR(2),
+  @@IDSeveritaDanno TINYINT,
+  @@DescrNonCod VARCHAR(50),
+  @@Importo FLOAT,
+  @@ImportoInValuta FLOAT,
+  @@CodStabilimento VARCHAR(2),
+  @@ImportoFattura FLOAT,
+  @@NumeroFattura VARCHAR(15),
+  @@DataFattura DATETIME,
+  @@ValutaFattura VARCHAR(3)
+AS
+BEGIN
+  DECLARE @@Controllo INT
+  DECLARE @@ErrMess VARCHAR(100)
+  DECLARE @@IDTransazione INT
+  DECLARE @@DaRiaprire DATETIME
+  DECLARE @@Cnt INT
+  DECLARE @@StatoSIGI INT
+
+  -- controllo danni doppi
+  SET @@Cnt = NULL
+
+  SELECT TOP 1 @@Cnt = DD.ID
+  FROM RDTDealerDettagliDanni DD(NOLOCK)
+  WHERE IDTesta = @@IDScheda
+    AND ID <> @@IDDettaglio
+    AND IDParte = @@IDParte
+    AND IDTipoDanno = @@IDTipoDanno
+
+  IF @@Cnt IS NOT NULL
+    BEGIN
+      SET @@ErrMess = '### dettaglio danni duplicato!'
+      SET @@IDScheda = 0
+      RAISERROR(@@ErrMess, 16, 1)
+      ROLLBACK TRANSACTION
+      RETURN 0
+    END
+
+  SELECT @@StatoSIGI = StatoSIGI
+  FROM RDTDealerTeste(NOLOCK)
+  WHERE ID = @@IDScheda
+
+  IF RTRIM(ISNULL(@@CodPosizione, '')) = ''
+    SET @@IDPosizioneDanno = NULL
+  IF RTRIM(ISNULL(@@CodSeverita, '')) = ''
+    SET @@IDSeveritaDanno = NULL
+
+  SET NOCOUNT OFF
+
+  BEGIN TRANSACTION
+
+  -- Controllo se la scheda era chiusa e se è cambiato qualcosa,
+  -- tale che debba essere riaperta
+  SELECT @@DaRiaprire = T.DataChiusura
+  FROM RDTDealerTeste T(NOLOCK) INNER JOIN
+    RDTDealerDettagliDanni D(NOLOCK) ON T.ID = D.IDTesta
+  WHERE T.ID = @@IDScheda
+    AND D.ID = @@IDDettaglio
+    AND T.DataChiusura IS NOT NULL
+    AND (T.CedIDOperatore <> @@CedIDOperatore OR 
+         T.DeaID <> @@DeaID OR
+         D.IDParte <> @@IDParte OR
+         D.IDTipoDanno <> @@IDTipoDanno OR
+         D.Importo <> @@Importo OR
+         D.IDPosizioneDanno <> @@IDPosizioneDanno OR
+         D.IDSeveritaDanno <> @@IDSeveritaDanno)
+
+  IF @@DaRiaprire IS NOT NULL
+    -- riapro la scheda
+    UPDATE RDTDealerTeste SET
+      CedIDOperatore = @@CedIDOperatore, CedTarga = @@CedTarga, DeaID = @@DeaID, RDTData = @@RDTData,
+      Note = @@Note, FConsegnaFuoriOrario = @@FConsegnaFuoriOrario, FRichiestaIntervento = @@FRichiestaIntervento,
+      FPeritoIntervenuto = @@FPeritoIntervenuto, FAllegataCopiaPerizia = @@FAllegataCopiaPerizia,
+      FVenditaAlMeglio = @@FVenditaAlMeglio, CodStabilimento = @@CodStabilimento, 
+      ImportoFattura = @@ImportoFattura, NumeroFattura = @@NumeroFattura, DataFattura = @@DataFattura,
+      ValutaFattura = @@ValutaFattura,
+      LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME(), DataChiusura = NULL
+    WHERE ID = @@IDScheda
+  ELSE
+	BEGIN
+    -- la lascio com'è (DataChiusura invariata)
+	-- N.B. gli stati SIGI da 0 a 6 consentono l'update totale,
+	-- gli altri no: consentono solo di aggiornare i dati di fatturazione
+    IF @@StatoSIGI IN (0, 1, 2, 3, 4, 5, 6, 999)
+		UPDATE RDTDealerTeste SET
+		CedIDOperatore = @@CedIDOperatore, CedTarga = @@CedTarga, DeaID = @@DeaID, RDTData = @@RDTData,
+		Note = @@Note, FConsegnaFuoriOrario = @@FConsegnaFuoriOrario, FRichiestaIntervento = @@FRichiestaIntervento,
+		FPeritoIntervenuto = @@FPeritoIntervenuto, FAllegataCopiaPerizia = @@FAllegataCopiaPerizia,
+		FVenditaAlMeglio = @@FVenditaAlMeglio, CodStabilimento = @@CodStabilimento, 
+		ImportoFattura = @@ImportoFattura, NumeroFattura = @@NumeroFattura, DataFattura = @@DataFattura,
+		ValutaFattura = @@ValutaFattura,
+		LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME()
+		WHERE ID = @@IDScheda
+	ELSE
+		UPDATE RDTDealerTeste SET
+		CedIDOperatore = @@CedIDOperatore, CedTarga = @@CedTarga, 
+		FConsegnaFuoriOrario = @@FConsegnaFuoriOrario, FRichiestaIntervento = @@FRichiestaIntervento,
+		FPeritoIntervenuto = @@FPeritoIntervenuto, FAllegataCopiaPerizia = @@FAllegataCopiaPerizia,
+		FVenditaAlMeglio = @@FVenditaAlMeglio, CodStabilimento = @@CodStabilimento, 
+		ImportoFattura = @@ImportoFattura, NumeroFattura = @@NumeroFattura, DataFattura = @@DataFattura,
+		ValutaFattura = @@ValutaFattura, Note = @@Note,
+		LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME()
+		WHERE ID = @@IDScheda
+	END
+
+  IF @@@@ROWCOUNT = 0
+    BEGIN
+      SET @@ErrMess = '### fallito aggiornamento scheda dealer'
+      RAISERROR(@@ErrMess, 16, -1)
+      ROLLBACK TRANSACTION
+      RETURN 0
+    END
+
+  IF @@StatoSIGI IN (0, 1, 2, 3, 4, 5, 6, 999)
+	BEGIN
+	-- N.B. gli stati SIGI da 0 a 6 consentono l'update totale,
+	-- gli altri no: consentono solo di aggiornare i dati di fatturazione
+    UPDATE RDTDealerDettagliDanni SET
+      IDParte = @@IDParte, IDTipoDanno = @@IDTipoDanno, IDPosizioneDanno = @@IDPosizioneDanno,
+      IDSeveritaDanno = @@IDSeveritaDanno, DescrNonCod = @@DescrNonCod, Importo = @@Importo, 
+			ImportoInValuta = @@ImportoInValuta,
+      LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME()
+    WHERE ID = @@IDDettaglio
+
+    IF @@@@ROWCOUNT = 0
+      BEGIN
+        SET @@ErrMess = '### fallito aggiornamento dettaglio dealer'
+        RAISERROR(@@ErrMess, 16, -1)
+        ROLLBACK TRANSACTION
+        RETURN 0
+      END
+	END
+
+  INSERT INTO ProgressiviTransazioni(CrazyDummy) VALUES (1)
+  SET @@IDTransazione = CAST(Scope_Identity() AS INT)
+
+  EXEC @@Controllo = spw_RigeneraScheda @@IDScheda, @@IDTransazione
+  IF @@Controllo = 0
+    RETURN 0
+
+  COMMIT TRANSACTION
+
+  RETURN 1
+END
+
+
+
+
+
+
+	
+</pre>
+</div>
+

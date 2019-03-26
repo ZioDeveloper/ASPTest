@@ -13,5 +13,39 @@ namespace ASPTest.Controllers
         {
             return View();
         }
+
+        public ActionResult IndexSQL()
+        {
+            return View();
+        }
+
+        public ActionResult SQLCode_01()
+        {
+            return View();
+        }
+
+        public ActionResult SQLCode_02()
+        {
+            return View();
+        }
+
+        public ActionResult SQLCode_03()
+        {
+            return View();
+        }
+
+        public ActionResult SQLCode_04()
+        {
+            return View();
+        }
+
+        public ActionResult IndexCSharp()
+        {
+            return View();
+        }
+
+        
     }
+
+    
 }

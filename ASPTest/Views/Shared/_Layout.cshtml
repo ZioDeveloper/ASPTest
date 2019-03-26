@@ -17,13 +17,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Welcome ! ", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+               
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+
 
                     @*Authentication*@
                     @if (Request.IsAuthenticated)
@@ -37,8 +35,12 @@
                     }
                     else
                     {
-                            <li>@Html.ActionLink("Login", "Login", "Utente")</li>
-                            <li>@Html.ActionLink("Register", "Registrazione", "Utente")</li>
+                        @Html.ActionLink("Welcome ! ", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li>@Html.ActionLink("About", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                        <li>@Html.ActionLink("Login", "Login", "Utente")</li>
+                        <li>@Html.ActionLink("Register", "Registrazione", "Utente")</li>
                     }
                 </ul>
             </div>
