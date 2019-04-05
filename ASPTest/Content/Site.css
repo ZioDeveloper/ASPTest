@@ -22,3 +22,15 @@ select,
 textarea {
     max-width: 280px;
 }
+
+#querypanel, #flip {
+    padding: 5px;
+    text-align: left;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#querypanel {
+    padding: 10px;
+    display: none;
+}

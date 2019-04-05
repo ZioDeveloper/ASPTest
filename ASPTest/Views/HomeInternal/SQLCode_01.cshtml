@@ -1,76 +1,81 @@
 ﻿
 @{
-    ViewBag.Title = "Esempi codice SQL";
+	ViewBag.Title = "Esempi codice SQL";
 }
 
 <h2>T-SQL</h2>
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="~/Scripts/JQuery/JavaScript.js"></script>
+
 @Html.ActionLink("Return to main...", "IndexSQL", "HomeInternal") - Reorganize all indexes in a database
 <br />
-<br>
-<div class="jumbotron">
-    <div class="code">
-        <pre>/*	Riorganizzazione di tutte le tabelle di un database 
-*	
-*/
+<br />
+<div id="flip">A JQuery script to collapse/expand the query text. CLICK ME !</div>
+<br />
 
-USE ["MioNomeDB"] --Mettere qui nome DB di cui si vuole riorganizzare indici
-
-/* Lasciare cosi come è... */
-BEGIN
-	/* Dichiaro variabili*/
-	DECLARE @@TableName varchar(255) 
-	DECLARE TableCursor CURSOR FOR 
-	
-
-	-- Recupero i nomi di tutte le tabelle asociate al DB
-	SELECT TABLE_NAME FROM information_schema.tables 
-	WHERE TABLE_TYPE  = 'base table' 
-	AND TABLE_NAME NOT LIKE '%TEMP%'
-	ORDER BY TABLE_NAME
-
-	-- Inizio ciclo sui tabelle
-	OPEN TableCursor 
-	
-	PRINT '***********************'
-	PRINT '***  Started ***'
-	PRINT '***********************'
-
-
-	FETCH NEXT FROM TableCursor INTO @@TableName 
-	WHILE @@FETCH_STATUS = 0	
-	BEGIN 
-		/* Sintassi del comando :
-		*  DBCC DBREINDEX (NomeTabella,indice da riorganizzare , FILL FACTOR )
-		*  in questo script :
-		*  1 lasciamo blank il secondo parametro, che vuol dire : riorganizza tutti gli indici della tabella
-		*  2 lasciamo 0 come ultimo parametro.
-		*    Con questo dico di NON CAMBIARE il FILL FACTOR esistente, 
-		*	 ed è così che deve fare , altrimenti lo cambia indiscriminatamente su tutte le tabelle,
-		*	 il che non può che determinare un impoverimento delle prestazioni
-		*	 
-		*	 Pro memoria : 
-		*	 1 Per tabelle che non cambiano dei frequente , si sceglie un  FILL FACTOR di default (100)
-		*	 2 Per tabelle con grande quantità di dati che cambiano , ( INSERT UPDATE DELTE ) si usa 
-		*	 FILL FACTOR da 70 a 90 ( Interconsult tipicamente 90 ) MA
-		*	 3 Per tabelle con grande quantità di dati che cambiano , ma che hanno l'indice cluster su 
-		*	 primary key, si usa FILL FACTOR = 100 
+<div id="querypanel" class="code">
+    <pre style="font-family:Consolas;font-size:13px;color:black;background:white;"><span style="color:green;">/*	Riorganizzazione&nbsp;di&nbsp;tutte&nbsp;le&nbsp;tabelle&nbsp;di&nbsp;un&nbsp;database&nbsp;</span>
+<span style="color:green;">*	</span>
+<span style="color:green;">*/</span>
  
-		* 
-		*/
-		DBCC DBREINDEX(@@TableName,'',0) -- NON MODIFICARE !
-		PRINT @@TableName
-		FETCH NEXT FROM TableCursor INTO @@TableName 
-	END 
-
-	CLOSE TableCursor
-	DEALLOCATE TableCursor
-	PRINT ''
-	PRINT '***********************'
-	PRINT '***  Completed ! ***'
-	PRINT '***********************'
-END	
-</pre>
-    </div>
+<span style="color:blue;">USE</span>&nbsp;[&quot;MioNomeDB&quot;]&nbsp;<span style="color:green;">--Mettere&nbsp;qui&nbsp;nome&nbsp;DB&nbsp;di&nbsp;cui&nbsp;si&nbsp;vuole&nbsp;riorganizzare&nbsp;indici</span>
+ 
+<span style="color:green;">/*&nbsp;Lasciare&nbsp;cosi&nbsp;come&nbsp;è...&nbsp;*/</span>
+<span style="color:blue;">BEGIN</span>
+    <span style="color:green;">/*&nbsp;Dichiaro&nbsp;variabili*/</span>
+    <span style="color:blue;">DECLARE</span>&nbsp;@@TableName&nbsp;<span style="color:blue;">varchar</span><span style="color:gray;">(</span>255<span style="color:gray;">)</span>&nbsp;
+    <span style="color:blue;">DECLARE</span>&nbsp;TableCursor&nbsp;<span style="color:blue;">CURSOR</span>&nbsp;<span style="color:blue;">FOR</span>&nbsp;
+	
+ 
+    <span style="color:green;">--&nbsp;Recupero&nbsp;i&nbsp;nomi&nbsp;di&nbsp;tutte&nbsp;le&nbsp;tabelle&nbsp;asociate&nbsp;al&nbsp;DB</span>
+    <span style="color:blue;">SELECT</span>&nbsp;TABLE_NAME&nbsp;<span style="color:blue;">FROM</span>&nbsp;<span style="color:green;">information_schema</span><span style="color:gray;">.</span><span style="color:green;">tables</span>&nbsp;
+    <span style="color:blue;">WHERE</span>&nbsp;TABLE_TYPE&nbsp;&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:red;">&#39;base&nbsp;table&#39;</span>&nbsp;
+    <span style="color:gray;">AND</span>&nbsp;TABLE_NAME&nbsp;<span style="color:gray;">NOT</span>&nbsp;<span style="color:gray;">LIKE</span>&nbsp;<span style="color:red;">&#39;%TEMP%&#39;</span>
+    <span style="color:blue;">ORDER</span>&nbsp;<span style="color:blue;">BY</span>&nbsp;TABLE_NAME
+ 
+    <span style="color:green;">--&nbsp;Inizio&nbsp;ciclo&nbsp;sui&nbsp;tabelle</span>
+    <span style="color:blue;">OPEN</span>&nbsp;TableCursor&nbsp;
+	
+    <span style="color:blue;">PRINT</span>&nbsp;<span style="color:red;">&#39;***********************&#39;</span>
+    <span style="color:blue;">PRINT</span>&nbsp;<span style="color:red;">&#39;***&nbsp;&nbsp;Started&nbsp;***&#39;</span>
+    <span style="color:blue;">PRINT</span>&nbsp;<span style="color:red;">&#39;***********************&#39;</span>
+ 
+ 
+    <span style="color:blue;">FETCH</span>&nbsp;<span style="color:blue;">NEXT</span>&nbsp;<span style="color:blue;">FROM</span>&nbsp;TableCursor&nbsp;<span style="color:blue;">INTO</span>&nbsp;@@TableName&nbsp;
+    <span style="color:blue;">WHILE</span>&nbsp;@@FETCH_STATUS&nbsp;<span style="color:gray;">=</span>&nbsp;0	
+    <span style="color:blue;">BEGIN</span>&nbsp;
+    <span style="color:green;">/*&nbsp;Sintassi&nbsp;del&nbsp;comando&nbsp;:</span>
+<span style="color:green;">		*&nbsp;&nbsp;DBCC&nbsp;DBREINDEX&nbsp;(NomeTabella,indice&nbsp;da&nbsp;riorganizzare&nbsp;,&nbsp;FILL&nbsp;FACTOR&nbsp;)</span>
+<span style="color:green;">		*&nbsp;&nbsp;in&nbsp;questo&nbsp;script&nbsp;:</span>
+<span style="color:green;">		*&nbsp;&nbsp;1&nbsp;lasciamo&nbsp;blank&nbsp;il&nbsp;secondo&nbsp;parametro,&nbsp;che&nbsp;vuol&nbsp;dire&nbsp;:&nbsp;riorganizza&nbsp;tutti&nbsp;gli&nbsp;indici&nbsp;della&nbsp;tabella</span>
+<span style="color:green;">		*&nbsp;&nbsp;2&nbsp;lasciamo&nbsp;0&nbsp;come&nbsp;ultimo&nbsp;parametro.</span>
+<span style="color:green;">		*&nbsp;&nbsp;&nbsp;&nbsp;Con&nbsp;questo&nbsp;dico&nbsp;di&nbsp;NON&nbsp;CAMBIARE&nbsp;il&nbsp;FILL&nbsp;FACTOR&nbsp;esistente,&nbsp;</span>
+<span style="color:green;">		*	&nbsp;ed&nbsp;è&nbsp;così&nbsp;che&nbsp;deve&nbsp;fare&nbsp;,&nbsp;altrimenti&nbsp;lo&nbsp;cambia&nbsp;indiscriminatamente&nbsp;su&nbsp;tutte&nbsp;le&nbsp;tabelle,</span>
+<span style="color:green;">		*	&nbsp;il&nbsp;che&nbsp;non&nbsp;può&nbsp;che&nbsp;determinare&nbsp;un&nbsp;impoverimento&nbsp;delle&nbsp;prestazioni</span>
+<span style="color:green;">		*	&nbsp;</span>
+<span style="color:green;">		*	&nbsp;Pro&nbsp;memoria&nbsp;:&nbsp;</span>
+<span style="color:green;">		*	&nbsp;1&nbsp;Per&nbsp;tabelle&nbsp;che&nbsp;non&nbsp;cambiano&nbsp;dei&nbsp;frequente&nbsp;,&nbsp;si&nbsp;sceglie&nbsp;un&nbsp;&nbsp;FILL&nbsp;FACTOR&nbsp;di&nbsp;default&nbsp;(100)</span>
+<span style="color:green;">		*	&nbsp;2&nbsp;Per&nbsp;tabelle&nbsp;con&nbsp;grande&nbsp;quantità&nbsp;di&nbsp;dati&nbsp;che&nbsp;cambiano&nbsp;,&nbsp;(&nbsp;INSERT&nbsp;UPDATE&nbsp;DELTE&nbsp;)&nbsp;si&nbsp;usa&nbsp;</span>
+<span style="color:green;">		*	&nbsp;FILL&nbsp;FACTOR&nbsp;da&nbsp;70&nbsp;a&nbsp;90&nbsp;(&nbsp;Interconsult&nbsp;tipicamente&nbsp;90&nbsp;)&nbsp;MA</span>
+<span style="color:green;">		*	&nbsp;3&nbsp;Per&nbsp;tabelle&nbsp;con&nbsp;grande&nbsp;quantità&nbsp;di&nbsp;dati&nbsp;che&nbsp;cambiano&nbsp;,&nbsp;ma&nbsp;che&nbsp;hanno&nbsp;l&#39;indice&nbsp;cluster&nbsp;su&nbsp;</span>
+<span style="color:green;">		*	&nbsp;primary&nbsp;key,&nbsp;si&nbsp;usa&nbsp;FILL&nbsp;FACTOR&nbsp;=&nbsp;100&nbsp;</span>
+<span style="color:green;">&nbsp;</span>
+<span style="color:green;">		*&nbsp;</span>
+<span style="color:green;">		*/</span>
+    <span style="color:blue;">DBCC</span>&nbsp;DBREINDEX<span style="color:gray;">(</span>@@TableName<span style="color:gray;">,</span><span style="color:red;">&#39;&#39;</span><span style="color:gray;">,</span>0<span style="color:gray;">)</span>&nbsp;<span style="color:green;">--&nbsp;NON&nbsp;MODIFICARE&nbsp;!</span>
+    <span style="color:blue;">PRINT</span>&nbsp;@@TableName
+    <span style="color:blue;">FETCH</span>&nbsp;<span style="color:blue;">NEXT</span>&nbsp;<span style="color:blue;">FROM</span>&nbsp;TableCursor&nbsp;<span style="color:blue;">INTO</span>&nbsp;@@TableName&nbsp;
+    <span style="color:blue;">END</span>&nbsp;
+ 
+    <span style="color:blue;">CLOSE</span>&nbsp;TableCursor
+    <span style="color:blue;">DEALLOCATE</span>&nbsp;TableCursor
+    <span style="color:blue;">PRINT</span>&nbsp;<span style="color:red;">&#39;&#39;</span>
+    <span style="color:blue;">PRINT</span>&nbsp;<span style="color:red;">&#39;***********************&#39;</span>
+    <span style="color:blue;">PRINT</span>&nbsp;<span style="color:red;">&#39;***&nbsp;&nbsp;Completed&nbsp;!&nbsp;***&#39;</span>
+    <span style="color:blue;">PRINT</span>&nbsp;<span style="color:red;">&#39;***********************&#39;</span>
+<span style="color:blue;">END</span>	</pre>
 </div>
+
 

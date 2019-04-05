@@ -1,13 +1,34 @@
-﻿
-@{
-    ViewBag.Title = "IndexCSharp";
-}
+﻿<h2>C # code examples</h2>
+@Html.ActionLink("Return to main...", "Index", "HomeInternal")
+<br /><br />
 
-<h2>IndexCSharp</h2>
-<br />
-<br />
-<video controls="controls" autoplay="autoplay" >
-    <source src="~/Content/Fatture Energia  26_03_2019 16_39_10.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-</video>
+      <div>
+          <b>SQL Examples : </b>
+          <br /><br />  Web Services
+          <ul>
+
+              <li>
+                  @Html.ActionLink("An ASMX Web Service.", "CSharpCode_01", "HomeInternal") - A simple ASMX web service used by hand held and Android devices to communicate with SQL Express database.'
+              </li>
+              <li>
+                  @Html.ActionLink("... And the Android app to consume it ... ", "AndroidCode_01", "HomeInternal") - Reorganize all statistics in a database
+              </li>
+
+          </ul>
+          <br /> WinForms in action.
+          <ul>
+
+              <li>
+                  @Html.ActionLink("A short video of a WinForm Application...", "CSharpVideo_01", "HomeInternal") - Reorganize all statistics in a database
+              </li>
+              @*<li>
+                @Html.ActionLink("Statistiscs", "SQLCode_04", "HomeInternal") - Reorganize all statistics in a database
+            </li>*@
+          </ul>
+
+      </div>
+
+
+
+
 

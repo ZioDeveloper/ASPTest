@@ -5,188 +5,188 @@
 
 <h2>T-SQL</h2>
 
-@Html.ActionLink("Return to main...", "IndexSQL", "HomeInternal") - Execute a conditional update over a detail table...
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="~/Scripts/JQuery/JavaScript.js"></script>
+
+@Html.ActionLink("Return to main...", "IndexSQL", "HomeInternal") - Reorganize all indexes in a database
 <br />
-<br>
-<div class="code">
-    <pre>USE [CSMS]
-GO
-/****** Object:  StoredProcedure [dbo].[Update_SD_Dettaglio]    Script Date: 26/03/2019 15:49:13 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+<br />
+<div id="flip">A JQuery script to collapse/expand the query text. CLICK ME !</div>
+<br />
 
+<div id="querypanel" class="code">
+    
+        <pre style="font-family:Consolas;font-size:13px;color:black;background:white;"><span style="color:blue;">GO</span>
+<span style="color:green;">/******&nbsp;Object:&nbsp;&nbsp;StoredProcedure&nbsp;[dbo].[Update_SD_Dettaglio]&nbsp;&nbsp;&nbsp;&nbsp;Script&nbsp;Date:&nbsp;26/03/2019&nbsp;15:49:13&nbsp;******/</span>
+<span style="color:blue;">SET</span>&nbsp;<span style="color:blue;">ANSI_NULLS</span>&nbsp;<span style="color:blue;">ON</span>
+<span style="color:blue;">GO</span>
+<span style="color:blue;">SET</span>&nbsp;<span style="color:blue;">QUOTED_IDENTIFIER</span>&nbsp;<span style="color:blue;">ON</span>
+<span style="color:blue;">GO</span>
+ 
+ 
+<span style="color:blue;">ALTER</span>&nbsp;<span style="color:blue;">PROCEDURE</span>&nbsp;[dbo]<span style="color:gray;">.</span>[Update_SD_Dettaglio]
+&nbsp;&nbsp;@@IDScheda&nbsp;<span style="color:blue;">INT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@IDDettaglio&nbsp;<span style="color:blue;">INT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@IDTipoScheda&nbsp;<span style="color:blue;">INT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@CedIDOperatore&nbsp;<span style="color:blue;">INT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@CedTarga&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>20<span style="color:gray;">),</span>
+&nbsp;&nbsp;@@DeaID&nbsp;<span style="color:blue;">INT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@RDTData&nbsp;<span style="color:blue;">DATETIME</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@Note&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>255<span style="color:gray;">),</span>
+&nbsp;&nbsp;@@FConsegnaFuoriOrario&nbsp;<span style="color:blue;">BIT</span><span style="color:gray;">,</span>&nbsp;
+&nbsp;&nbsp;@@FRichiestaIntervento&nbsp;<span style="color:blue;">BIT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@FPeritoIntervenuto&nbsp;<span style="color:blue;">BIT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@FAllegataCopiaPerizia&nbsp;<span style="color:blue;">BIT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@FVenditaAlMeglio&nbsp;<span style="color:blue;">BIT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@IDParte&nbsp;<span style="color:blue;">INT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@IDTipoDanno&nbsp;<span style="color:blue;">TINYINT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@CodPosizione&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>2<span style="color:gray;">),</span>
+&nbsp;&nbsp;@@IDPosizioneDanno&nbsp;<span style="color:blue;">TINYINT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@CodSeverita&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>2<span style="color:gray;">),</span>
+&nbsp;&nbsp;@@IDSeveritaDanno&nbsp;<span style="color:blue;">TINYINT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@DescrNonCod&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>50<span style="color:gray;">),</span>
+&nbsp;&nbsp;@@Importo&nbsp;<span style="color:blue;">FLOAT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@ImportoInValuta&nbsp;<span style="color:blue;">FLOAT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@CodStabilimento&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>2<span style="color:gray;">),</span>
+&nbsp;&nbsp;@@ImportoFattura&nbsp;<span style="color:blue;">FLOAT</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@NumeroFattura&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>15<span style="color:gray;">),</span>
+&nbsp;&nbsp;@@DataFattura&nbsp;<span style="color:blue;">DATETIME</span><span style="color:gray;">,</span>
+&nbsp;&nbsp;@@ValutaFattura&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>3<span style="color:gray;">)</span>
+<span style="color:blue;">AS</span>
+<span style="color:blue;">BEGIN</span>
+&nbsp;&nbsp;<span style="color:blue;">DECLARE</span>&nbsp;@@Controllo&nbsp;<span style="color:blue;">INT</span>
+&nbsp;&nbsp;<span style="color:blue;">DECLARE</span>&nbsp;@@ErrMess&nbsp;<span style="color:blue;">VARCHAR</span><span style="color:gray;">(</span>100<span style="color:gray;">)</span>
+&nbsp;&nbsp;<span style="color:blue;">DECLARE</span>&nbsp;@@IDTransazione&nbsp;<span style="color:blue;">INT</span>
+&nbsp;&nbsp;<span style="color:blue;">DECLARE</span>&nbsp;@@DaRiaprire&nbsp;<span style="color:blue;">DATETIME</span>
+&nbsp;&nbsp;<span style="color:blue;">DECLARE</span>&nbsp;@@Cnt&nbsp;<span style="color:blue;">INT</span>
+&nbsp;&nbsp;<span style="color:blue;">DECLARE</span>&nbsp;@@StatoSIGI&nbsp;<span style="color:blue;">INT</span>
+ 
+&nbsp;&nbsp;<span style="color:green;">--&nbsp;controllo&nbsp;danni&nbsp;doppi</span>
+&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@Cnt&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:gray;">NULL</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">SELECT</span>&nbsp;<span style="color:blue;">TOP</span>&nbsp;1&nbsp;@@Cnt&nbsp;<span style="color:gray;">=</span>&nbsp;DD<span style="color:gray;">.</span>ID
+&nbsp;&nbsp;<span style="color:blue;">FROM</span>&nbsp;RDTDealerDettagliDanni&nbsp;DD<span style="color:gray;">(</span><span style="color:blue;">NOLOCK</span><span style="color:gray;">)</span>
+&nbsp;&nbsp;<span style="color:blue;">WHERE</span>&nbsp;IDTesta&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDScheda
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">AND</span>&nbsp;ID&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@IDDettaglio
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">AND</span>&nbsp;IDParte&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDParte
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">AND</span>&nbsp;IDTipoDanno&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDTipoDanno
+ 
+&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;@@Cnt&nbsp;<span style="color:gray;">IS</span>&nbsp;<span style="color:gray;">NOT</span>&nbsp;<span style="color:gray;">NULL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">BEGIN</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@ErrMess&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:red;">&#39;###&nbsp;dettaglio&nbsp;danni&nbsp;duplicato!&#39;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@IDScheda&nbsp;<span style="color:gray;">=</span>&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">RAISERROR</span><span style="color:gray;">(</span>@@ErrMess<span style="color:gray;">,</span>&nbsp;16<span style="color:gray;">,</span>&nbsp;1<span style="color:gray;">)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">ROLLBACK</span>&nbsp;<span style="color:blue;">TRANSACTION</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">RETURN</span>&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">END</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">SELECT</span>&nbsp;@@StatoSIGI&nbsp;<span style="color:gray;">=</span>&nbsp;StatoSIGI
+&nbsp;&nbsp;<span style="color:blue;">FROM</span>&nbsp;RDTDealerTeste<span style="color:gray;">(</span><span style="color:blue;">NOLOCK</span><span style="color:gray;">)</span>
+&nbsp;&nbsp;<span style="color:blue;">WHERE</span>&nbsp;ID&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDScheda
+ 
+&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;<span style="color:magenta;">RTRIM</span><span style="color:gray;">(</span><span style="color:magenta;">ISNULL</span><span style="color:gray;">(</span>@@CodPosizione<span style="color:gray;">,</span>&nbsp;<span style="color:red;">&#39;&#39;</span><span style="color:gray;">))</span>&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:red;">&#39;&#39;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@IDPosizioneDanno&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:gray;">NULL</span>
+&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;<span style="color:magenta;">RTRIM</span><span style="color:gray;">(</span><span style="color:magenta;">ISNULL</span><span style="color:gray;">(</span>@@CodSeverita<span style="color:gray;">,</span>&nbsp;<span style="color:red;">&#39;&#39;</span><span style="color:gray;">))</span>&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:red;">&#39;&#39;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@IDSeveritaDanno&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:gray;">NULL</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;<span style="color:blue;">NOCOUNT</span>&nbsp;<span style="color:blue;">OFF</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">BEGIN</span>&nbsp;<span style="color:blue;">TRANSACTION</span>
+ 
+&nbsp;&nbsp;<span style="color:green;">--&nbsp;Controllo&nbsp;se&nbsp;la&nbsp;scheda&nbsp;era&nbsp;chiusa&nbsp;e&nbsp;se&nbsp;è&nbsp;cambiato&nbsp;qualcosa,</span>
+&nbsp;&nbsp;<span style="color:green;">--&nbsp;tale&nbsp;che&nbsp;debba&nbsp;essere&nbsp;riaperta</span>
+&nbsp;&nbsp;<span style="color:blue;">SELECT</span>&nbsp;@@DaRiaprire&nbsp;<span style="color:gray;">=</span>&nbsp;T<span style="color:gray;">.</span>DataChiusura
+&nbsp;&nbsp;<span style="color:blue;">FROM</span>&nbsp;RDTDealerTeste&nbsp;T<span style="color:gray;">(</span><span style="color:blue;">NOLOCK</span><span style="color:gray;">)</span>&nbsp;<span style="color:gray;">INNER</span>&nbsp;<span style="color:gray;">JOIN</span>
+&nbsp;&nbsp;&nbsp;&nbsp;RDTDealerDettagliDanni&nbsp;D<span style="color:gray;">(</span><span style="color:blue;">NOLOCK</span><span style="color:gray;">)</span>&nbsp;<span style="color:blue;">ON</span>&nbsp;T<span style="color:gray;">.</span>ID&nbsp;<span style="color:gray;">=</span>&nbsp;D<span style="color:gray;">.</span>IDTesta
+&nbsp;&nbsp;<span style="color:blue;">WHERE</span>&nbsp;T<span style="color:gray;">.</span>ID&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDScheda
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">AND</span>&nbsp;D<span style="color:gray;">.</span>ID&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDDettaglio
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">AND</span>&nbsp;T<span style="color:gray;">.</span>DataChiusura&nbsp;<span style="color:gray;">IS</span>&nbsp;<span style="color:gray;">NOT</span>&nbsp;<span style="color:gray;">NULL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">AND</span><span style="color:blue;">&nbsp;</span><span style="color:gray;">(</span>T<span style="color:gray;">.</span>CedIDOperatore&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@CedIDOperatore&nbsp;<span style="color:gray;">OR</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T<span style="color:gray;">.</span>DeaID&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@DeaID&nbsp;<span style="color:gray;">OR</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D<span style="color:gray;">.</span>IDParte&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@IDParte&nbsp;<span style="color:gray;">OR</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D<span style="color:gray;">.</span>IDTipoDanno&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@IDTipoDanno&nbsp;<span style="color:gray;">OR</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D<span style="color:gray;">.</span>Importo&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@Importo&nbsp;<span style="color:gray;">OR</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D<span style="color:gray;">.</span>IDPosizioneDanno&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@IDPosizioneDanno&nbsp;<span style="color:gray;">OR</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D<span style="color:gray;">.</span>IDSeveritaDanno&nbsp;<span style="color:gray;">&lt;&gt;</span>&nbsp;@@IDSeveritaDanno<span style="color:gray;">)</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;@@DaRiaprire&nbsp;<span style="color:gray;">IS</span>&nbsp;<span style="color:gray;">NOT</span>&nbsp;<span style="color:gray;">NULL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">--&nbsp;riapro&nbsp;la&nbsp;scheda</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:magenta;">UPDATE</span>&nbsp;RDTDealerTeste&nbsp;<span style="color:blue;">SET</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CedIDOperatore&nbsp;<span style="color:gray;">=</span>&nbsp;@@CedIDOperatore<span style="color:gray;">,</span>&nbsp;CedTarga&nbsp;<span style="color:gray;">=</span>&nbsp;@@CedTarga<span style="color:gray;">,</span>&nbsp;DeaID&nbsp;<span style="color:gray;">=</span>&nbsp;@@DeaID<span style="color:gray;">,</span>&nbsp;RDTData&nbsp;<span style="color:gray;">=</span>&nbsp;@@RDTData<span style="color:gray;">,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;<span style="color:gray;">=</span>&nbsp;@@Note<span style="color:gray;">,</span>&nbsp;FConsegnaFuoriOrario&nbsp;<span style="color:gray;">=</span>&nbsp;@@FConsegnaFuoriOrario<span style="color:gray;">,</span>&nbsp;FRichiestaIntervento&nbsp;<span style="color:gray;">=</span>&nbsp;@@FRichiestaIntervento<span style="color:gray;">,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPeritoIntervenuto&nbsp;<span style="color:gray;">=</span>&nbsp;@@FPeritoIntervenuto<span style="color:gray;">,</span>&nbsp;FAllegataCopiaPerizia&nbsp;<span style="color:gray;">=</span>&nbsp;@@FAllegataCopiaPerizia<span style="color:gray;">,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FVenditaAlMeglio&nbsp;<span style="color:gray;">=</span>&nbsp;@@FVenditaAlMeglio<span style="color:gray;">,</span>&nbsp;CodStabilimento&nbsp;<span style="color:gray;">=</span>&nbsp;@@CodStabilimento<span style="color:gray;">,</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ImportoFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@ImportoFattura<span style="color:gray;">,</span>&nbsp;NumeroFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@NumeroFattura<span style="color:gray;">,</span>&nbsp;DataFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@DataFattura<span style="color:gray;">,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValutaFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@ValutaFattura<span style="color:gray;">,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LastUpdateDate&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">GetDate</span><span style="color:gray;">(),</span>&nbsp;LastUpdateUser&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">USER_NAME</span><span style="color:gray;">(),</span>&nbsp;DataChiusura&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:gray;">NULL</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">WHERE</span>&nbsp;ID&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDScheda
+&nbsp;&nbsp;<span style="color:blue;">ELSE</span>
+        <span style="color:blue;">BEGIN</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">--&nbsp;la&nbsp;lascio&nbsp;com&#39;è&nbsp;(DataChiusura&nbsp;invariata)</span>
+        <span style="color:green;">--&nbsp;N.B.&nbsp;gli&nbsp;stati&nbsp;SIGI&nbsp;da&nbsp;0&nbsp;a&nbsp;6&nbsp;consentono&nbsp;l&#39;update&nbsp;totale,</span>
+        <span style="color:green;">--&nbsp;gli&nbsp;altri&nbsp;no:&nbsp;consentono&nbsp;solo&nbsp;di&nbsp;aggiornare&nbsp;i&nbsp;dati&nbsp;di&nbsp;fatturazione</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;@@StatoSIGI&nbsp;<span style="color:gray;">IN</span><span style="color:blue;">&nbsp;</span><span style="color:gray;">(</span>0<span style="color:gray;">,</span>&nbsp;1<span style="color:gray;">,</span>&nbsp;2<span style="color:gray;">,</span>&nbsp;3<span style="color:gray;">,</span>&nbsp;4<span style="color:gray;">,</span>&nbsp;5<span style="color:gray;">,</span>&nbsp;6<span style="color:gray;">,</span>&nbsp;999<span style="color:gray;">)</span>
+        <span style="color:magenta;">UPDATE</span>&nbsp;RDTDealerTeste&nbsp;<span style="color:blue;">SET</span>
+		CedIDOperatore&nbsp;<span style="color:gray;">=</span>&nbsp;@@CedIDOperatore<span style="color:gray;">,</span>&nbsp;CedTarga&nbsp;<span style="color:gray;">=</span>&nbsp;@@CedTarga<span style="color:gray;">,</span>&nbsp;DeaID&nbsp;<span style="color:gray;">=</span>&nbsp;@@DeaID<span style="color:gray;">,</span>&nbsp;RDTData&nbsp;<span style="color:gray;">=</span>&nbsp;@@RDTData<span style="color:gray;">,</span>
+		Note&nbsp;<span style="color:gray;">=</span>&nbsp;@@Note<span style="color:gray;">,</span>&nbsp;FConsegnaFuoriOrario&nbsp;<span style="color:gray;">=</span>&nbsp;@@FConsegnaFuoriOrario<span style="color:gray;">,</span>&nbsp;FRichiestaIntervento&nbsp;<span style="color:gray;">=</span>&nbsp;@@FRichiestaIntervento<span style="color:gray;">,</span>
+		FPeritoIntervenuto&nbsp;<span style="color:gray;">=</span>&nbsp;@@FPeritoIntervenuto<span style="color:gray;">,</span>&nbsp;FAllegataCopiaPerizia&nbsp;<span style="color:gray;">=</span>&nbsp;@@FAllegataCopiaPerizia<span style="color:gray;">,</span>
+		FVenditaAlMeglio&nbsp;<span style="color:gray;">=</span>&nbsp;@@FVenditaAlMeglio<span style="color:gray;">,</span>&nbsp;CodStabilimento&nbsp;<span style="color:gray;">=</span>&nbsp;@@CodStabilimento<span style="color:gray;">,</span>&nbsp;
+		ImportoFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@ImportoFattura<span style="color:gray;">,</span>&nbsp;NumeroFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@NumeroFattura<span style="color:gray;">,</span>&nbsp;DataFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@DataFattura<span style="color:gray;">,</span>
+		ValutaFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@ValutaFattura<span style="color:gray;">,</span>
+		LastUpdateDate&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">GetDate</span><span style="color:gray;">(),</span>&nbsp;LastUpdateUser&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">USER_NAME</span><span style="color:gray;">()</span>
+        <span style="color:blue;">WHERE</span>&nbsp;ID&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDScheda
+        <span style="color:blue;">ELSE</span>
+        <span style="color:magenta;">UPDATE</span>&nbsp;RDTDealerTeste&nbsp;<span style="color:blue;">SET</span>
+		CedIDOperatore&nbsp;<span style="color:gray;">=</span>&nbsp;@@CedIDOperatore<span style="color:gray;">,</span>&nbsp;CedTarga&nbsp;<span style="color:gray;">=</span>&nbsp;@@CedTarga<span style="color:gray;">,</span>&nbsp;
+		FConsegnaFuoriOrario&nbsp;<span style="color:gray;">=</span>&nbsp;@@FConsegnaFuoriOrario<span style="color:gray;">,</span>&nbsp;FRichiestaIntervento&nbsp;<span style="color:gray;">=</span>&nbsp;@@FRichiestaIntervento<span style="color:gray;">,</span>
+		FPeritoIntervenuto&nbsp;<span style="color:gray;">=</span>&nbsp;@@FPeritoIntervenuto<span style="color:gray;">,</span>&nbsp;FAllegataCopiaPerizia&nbsp;<span style="color:gray;">=</span>&nbsp;@@FAllegataCopiaPerizia<span style="color:gray;">,</span>
+		FVenditaAlMeglio&nbsp;<span style="color:gray;">=</span>&nbsp;@@FVenditaAlMeglio<span style="color:gray;">,</span>&nbsp;CodStabilimento&nbsp;<span style="color:gray;">=</span>&nbsp;@@CodStabilimento<span style="color:gray;">,</span>&nbsp;
+		ImportoFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@ImportoFattura<span style="color:gray;">,</span>&nbsp;NumeroFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@NumeroFattura<span style="color:gray;">,</span>&nbsp;DataFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@DataFattura<span style="color:gray;">,</span>
+		ValutaFattura&nbsp;<span style="color:gray;">=</span>&nbsp;@@ValutaFattura<span style="color:gray;">,</span>&nbsp;Note&nbsp;<span style="color:gray;">=</span>&nbsp;@@Note<span style="color:gray;">,</span>
+		LastUpdateDate&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">GetDate</span><span style="color:gray;">(),</span>&nbsp;LastUpdateUser&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">USER_NAME</span><span style="color:gray;">()</span>
+        <span style="color:blue;">WHERE</span>&nbsp;ID&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDScheda
+        <span style="color:blue;">END</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;@@@@ROWCOUNT&nbsp;<span style="color:gray;">=</span>&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">BEGIN</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@ErrMess&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:red;">&#39;###&nbsp;fallito&nbsp;aggiornamento&nbsp;scheda&nbsp;dealer&#39;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">RAISERROR</span><span style="color:gray;">(</span>@@ErrMess<span style="color:gray;">,</span>&nbsp;16<span style="color:gray;">,</span>&nbsp;<span style="color:gray;">-</span>1<span style="color:gray;">)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">ROLLBACK</span>&nbsp;<span style="color:blue;">TRANSACTION</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">RETURN</span>&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">END</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;@@StatoSIGI&nbsp;<span style="color:gray;">IN</span><span style="color:blue;">&nbsp;</span><span style="color:gray;">(</span>0<span style="color:gray;">,</span>&nbsp;1<span style="color:gray;">,</span>&nbsp;2<span style="color:gray;">,</span>&nbsp;3<span style="color:gray;">,</span>&nbsp;4<span style="color:gray;">,</span>&nbsp;5<span style="color:gray;">,</span>&nbsp;6<span style="color:gray;">,</span>&nbsp;999<span style="color:gray;">)</span>
+        <span style="color:blue;">BEGIN</span>
+        <span style="color:green;">--&nbsp;N.B.&nbsp;gli&nbsp;stati&nbsp;SIGI&nbsp;da&nbsp;0&nbsp;a&nbsp;6&nbsp;consentono&nbsp;l&#39;update&nbsp;totale,</span>
+        <span style="color:green;">--&nbsp;gli&nbsp;altri&nbsp;no:&nbsp;consentono&nbsp;solo&nbsp;di&nbsp;aggiornare&nbsp;i&nbsp;dati&nbsp;di&nbsp;fatturazione</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:magenta;">UPDATE</span>&nbsp;RDTDealerDettagliDanni&nbsp;<span style="color:blue;">SET</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDParte&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDParte<span style="color:gray;">,</span>&nbsp;IDTipoDanno&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDTipoDanno<span style="color:gray;">,</span>&nbsp;IDPosizioneDanno&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDPosizioneDanno<span style="color:gray;">,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDSeveritaDanno&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDSeveritaDanno<span style="color:gray;">,</span>&nbsp;DescrNonCod&nbsp;<span style="color:gray;">=</span>&nbsp;@@DescrNonCod<span style="color:gray;">,</span>&nbsp;Importo&nbsp;<span style="color:gray;">=</span>&nbsp;@@Importo<span style="color:gray;">,</span>&nbsp;
+			ImportoInValuta&nbsp;<span style="color:gray;">=</span>&nbsp;@@ImportoInValuta<span style="color:gray;">,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LastUpdateDate&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">GetDate</span><span style="color:gray;">(),</span>&nbsp;LastUpdateUser&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">USER_NAME</span><span style="color:gray;">()</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">WHERE</span>&nbsp;ID&nbsp;<span style="color:gray;">=</span>&nbsp;@@IDDettaglio
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;@@@@ROWCOUNT&nbsp;<span style="color:gray;">=</span>&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">BEGIN</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@ErrMess&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:red;">&#39;###&nbsp;fallito&nbsp;aggiornamento&nbsp;dettaglio&nbsp;dealer&#39;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">RAISERROR</span><span style="color:gray;">(</span>@@ErrMess<span style="color:gray;">,</span>&nbsp;16<span style="color:gray;">,</span>&nbsp;<span style="color:gray;">-</span>1<span style="color:gray;">)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">ROLLBACK</span>&nbsp;<span style="color:blue;">TRANSACTION</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">RETURN</span>&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">END</span>
+        <span style="color:blue;">END</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">INSERT</span>&nbsp;<span style="color:blue;">INTO</span>&nbsp;ProgressiviTransazioni<span style="color:gray;">(</span>CrazyDummy<span style="color:gray;">)</span>&nbsp;<span style="color:blue;">VALUES&nbsp;</span><span style="color:gray;">(</span>1<span style="color:gray;">)</span>
+&nbsp;&nbsp;<span style="color:blue;">SET</span>&nbsp;@@IDTransazione&nbsp;<span style="color:gray;">=</span>&nbsp;<span style="color:magenta;">CAST</span><span style="color:gray;">(</span><span style="color:magenta;">Scope_Identity</span><span style="color:gray;">()</span>&nbsp;<span style="color:blue;">AS</span>&nbsp;<span style="color:blue;">INT</span><span style="color:gray;">)</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">EXEC</span>&nbsp;@@Controllo&nbsp;<span style="color:gray;">=</span>&nbsp;spw_RigeneraScheda<span style="color:blue;">&nbsp;</span>@@IDScheda<span style="color:gray;">,</span>&nbsp;@@IDTransazione
+&nbsp;&nbsp;<span style="color:blue;">IF</span>&nbsp;@@Controllo&nbsp;<span style="color:gray;">=</span>&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">RETURN</span>&nbsp;0
+ 
+&nbsp;&nbsp;<span style="color:blue;">COMMIT</span>&nbsp;<span style="color:blue;">TRANSACTION</span>
+ 
+&nbsp;&nbsp;<span style="color:blue;">RETURN</span>&nbsp;1
+<span style="color:blue;">END</span>
 
-ALTER PROCEDURE [dbo].[Update_SD_Dettaglio]
-  @@IDScheda INT,
-  @@IDDettaglio INT,
-  @@IDTipoScheda INT,
-  @@CedIDOperatore INT,
-  @@CedTarga VARCHAR(20),
-  @@DeaID INT,
-  @@RDTData DATETIME,
-  @@Note VARCHAR(255),
-  @@FConsegnaFuoriOrario BIT, 
-  @@FRichiestaIntervento BIT,
-  @@FPeritoIntervenuto BIT,
-  @@FAllegataCopiaPerizia BIT,
-  @@FVenditaAlMeglio BIT,
-  @@IDParte INT,
-  @@IDTipoDanno TINYINT,
-  @@CodPosizione VARCHAR(2),
-  @@IDPosizioneDanno TINYINT,
-  @@CodSeverita VARCHAR(2),
-  @@IDSeveritaDanno TINYINT,
-  @@DescrNonCod VARCHAR(50),
-  @@Importo FLOAT,
-  @@ImportoInValuta FLOAT,
-  @@CodStabilimento VARCHAR(2),
-  @@ImportoFattura FLOAT,
-  @@NumeroFattura VARCHAR(15),
-  @@DataFattura DATETIME,
-  @@ValutaFattura VARCHAR(3)
-AS
-BEGIN
-  DECLARE @@Controllo INT
-  DECLARE @@ErrMess VARCHAR(100)
-  DECLARE @@IDTransazione INT
-  DECLARE @@DaRiaprire DATETIME
-  DECLARE @@Cnt INT
-  DECLARE @@StatoSIGI INT
-
-  -- controllo danni doppi
-  SET @@Cnt = NULL
-
-  SELECT TOP 1 @@Cnt = DD.ID
-  FROM RDTDealerDettagliDanni DD(NOLOCK)
-  WHERE IDTesta = @@IDScheda
-    AND ID <> @@IDDettaglio
-    AND IDParte = @@IDParte
-    AND IDTipoDanno = @@IDTipoDanno
-
-  IF @@Cnt IS NOT NULL
-    BEGIN
-      SET @@ErrMess = '### dettaglio danni duplicato!'
-      SET @@IDScheda = 0
-      RAISERROR(@@ErrMess, 16, 1)
-      ROLLBACK TRANSACTION
-      RETURN 0
-    END
-
-  SELECT @@StatoSIGI = StatoSIGI
-  FROM RDTDealerTeste(NOLOCK)
-  WHERE ID = @@IDScheda
-
-  IF RTRIM(ISNULL(@@CodPosizione, '')) = ''
-    SET @@IDPosizioneDanno = NULL
-  IF RTRIM(ISNULL(@@CodSeverita, '')) = ''
-    SET @@IDSeveritaDanno = NULL
-
-  SET NOCOUNT OFF
-
-  BEGIN TRANSACTION
-
-  -- Controllo se la scheda era chiusa e se è cambiato qualcosa,
-  -- tale che debba essere riaperta
-  SELECT @@DaRiaprire = T.DataChiusura
-  FROM RDTDealerTeste T(NOLOCK) INNER JOIN
-    RDTDealerDettagliDanni D(NOLOCK) ON T.ID = D.IDTesta
-  WHERE T.ID = @@IDScheda
-    AND D.ID = @@IDDettaglio
-    AND T.DataChiusura IS NOT NULL
-    AND (T.CedIDOperatore <> @@CedIDOperatore OR 
-         T.DeaID <> @@DeaID OR
-         D.IDParte <> @@IDParte OR
-         D.IDTipoDanno <> @@IDTipoDanno OR
-         D.Importo <> @@Importo OR
-         D.IDPosizioneDanno <> @@IDPosizioneDanno OR
-         D.IDSeveritaDanno <> @@IDSeveritaDanno)
-
-  IF @@DaRiaprire IS NOT NULL
-    -- riapro la scheda
-    UPDATE RDTDealerTeste SET
-      CedIDOperatore = @@CedIDOperatore, CedTarga = @@CedTarga, DeaID = @@DeaID, RDTData = @@RDTData,
-      Note = @@Note, FConsegnaFuoriOrario = @@FConsegnaFuoriOrario, FRichiestaIntervento = @@FRichiestaIntervento,
-      FPeritoIntervenuto = @@FPeritoIntervenuto, FAllegataCopiaPerizia = @@FAllegataCopiaPerizia,
-      FVenditaAlMeglio = @@FVenditaAlMeglio, CodStabilimento = @@CodStabilimento, 
-      ImportoFattura = @@ImportoFattura, NumeroFattura = @@NumeroFattura, DataFattura = @@DataFattura,
-      ValutaFattura = @@ValutaFattura,
-      LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME(), DataChiusura = NULL
-    WHERE ID = @@IDScheda
-  ELSE
-	BEGIN
-    -- la lascio com'è (DataChiusura invariata)
-	-- N.B. gli stati SIGI da 0 a 6 consentono l'update totale,
-	-- gli altri no: consentono solo di aggiornare i dati di fatturazione
-    IF @@StatoSIGI IN (0, 1, 2, 3, 4, 5, 6, 999)
-		UPDATE RDTDealerTeste SET
-		CedIDOperatore = @@CedIDOperatore, CedTarga = @@CedTarga, DeaID = @@DeaID, RDTData = @@RDTData,
-		Note = @@Note, FConsegnaFuoriOrario = @@FConsegnaFuoriOrario, FRichiestaIntervento = @@FRichiestaIntervento,
-		FPeritoIntervenuto = @@FPeritoIntervenuto, FAllegataCopiaPerizia = @@FAllegataCopiaPerizia,
-		FVenditaAlMeglio = @@FVenditaAlMeglio, CodStabilimento = @@CodStabilimento, 
-		ImportoFattura = @@ImportoFattura, NumeroFattura = @@NumeroFattura, DataFattura = @@DataFattura,
-		ValutaFattura = @@ValutaFattura,
-		LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME()
-		WHERE ID = @@IDScheda
-	ELSE
-		UPDATE RDTDealerTeste SET
-		CedIDOperatore = @@CedIDOperatore, CedTarga = @@CedTarga, 
-		FConsegnaFuoriOrario = @@FConsegnaFuoriOrario, FRichiestaIntervento = @@FRichiestaIntervento,
-		FPeritoIntervenuto = @@FPeritoIntervenuto, FAllegataCopiaPerizia = @@FAllegataCopiaPerizia,
-		FVenditaAlMeglio = @@FVenditaAlMeglio, CodStabilimento = @@CodStabilimento, 
-		ImportoFattura = @@ImportoFattura, NumeroFattura = @@NumeroFattura, DataFattura = @@DataFattura,
-		ValutaFattura = @@ValutaFattura, Note = @@Note,
-		LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME()
-		WHERE ID = @@IDScheda
-	END
-
-  IF @@@@ROWCOUNT = 0
-    BEGIN
-      SET @@ErrMess = '### fallito aggiornamento scheda dealer'
-      RAISERROR(@@ErrMess, 16, -1)
-      ROLLBACK TRANSACTION
-      RETURN 0
-    END
-
-  IF @@StatoSIGI IN (0, 1, 2, 3, 4, 5, 6, 999)
-	BEGIN
-	-- N.B. gli stati SIGI da 0 a 6 consentono l'update totale,
-	-- gli altri no: consentono solo di aggiornare i dati di fatturazione
-    UPDATE RDTDealerDettagliDanni SET
-      IDParte = @@IDParte, IDTipoDanno = @@IDTipoDanno, IDPosizioneDanno = @@IDPosizioneDanno,
-      IDSeveritaDanno = @@IDSeveritaDanno, DescrNonCod = @@DescrNonCod, Importo = @@Importo, 
-			ImportoInValuta = @@ImportoInValuta,
-      LastUpdateDate = GetDate(), LastUpdateUser = USER_NAME()
-    WHERE ID = @@IDDettaglio
-
-    IF @@@@ROWCOUNT = 0
-      BEGIN
-        SET @@ErrMess = '### fallito aggiornamento dettaglio dealer'
-        RAISERROR(@@ErrMess, 16, -1)
-        ROLLBACK TRANSACTION
-        RETURN 0
-      END
-	END
-
-  INSERT INTO ProgressiviTransazioni(CrazyDummy) VALUES (1)
-  SET @@IDTransazione = CAST(Scope_Identity() AS INT)
-
-  EXEC @@Controllo = spw_RigeneraScheda @@IDScheda, @@IDTransazione
-  IF @@Controllo = 0
-    RETURN 0
-
-  COMMIT TRANSACTION
-
-  RETURN 1
-END
-
-
-
-
-
-
-	
 </pre>
 </div>
 

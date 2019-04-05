@@ -39,12 +39,32 @@ namespace ASPTest.Controllers
             return View();
         }
 
+        public ActionResult SQLCode_05()
+        {
+            return View();
+        }
+
         public ActionResult IndexCSharp()
         {
             return View();
         }
 
+        public ActionResult CSharpCode_01()
+        {
+            return View();
+        }
+
+        public ActionResult AndroidCode_01()
+        {
+            return View();
+        }
+
+        public ActionResult CSharpVideo_01()
+        {
+            return View();
+        }
         
+
     }
 
     

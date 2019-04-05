@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "CSharpVideo_01";
+}
+
+<h2>WinForm video</h2>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="~/Scripts/JQuery/JavaScript.js"></script>
+
+@Html.ActionLink("Return to main...", "IndexCSharp", "HomeInternal") - Reorganize all indexes in a database
+<br />
+<br />
+<div id="flip">A JQuery script to collapse/expand the video player. CLICK ME !</div>
+<br />
+
+<div id="querypanel" class="code">
+    <video controls="controls" autoplay="autoplay">
+        <source src="~/Content/Fatture Energia  26_03_2019 16_39_10.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+ 
+
+<style>
+    video {
+        width: 100%;
+        height: auto;
+    }
+</style>

@@ -233,6 +233,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Fatture Energia  26_03_2019 16_39_10.mp4" />
     <Content Include="Content\Guru_meditation.gif" />
+    <Content Include="Scripts\JQuery\JavaScript.js" />
     <Content Include="DBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>DBModel.edmx</DependentUpon>
@@ -294,6 +295,11 @@
     <Content Include="Views\HomeInternal\SQLCode_04.cshtml" />
     <Content Include="Views\HomeInternal\IndexSQL.cshtml" />
     <Content Include="Views\HomeInternal\IndexCSharp.cshtml" />
+    <Content Include="Views\HomeInternal\SQLCode_05.cshtml" />
+    <Content Include="Views\Shared\_LayoutFooter.cshtml" />
+    <Content Include="Views\HomeInternal\CSharpCode_01.cshtml" />
+    <Content Include="Views\HomeInternal\AndroidCode_01.cshtml" />
+    <Content Include="Views\HomeInternal\CSharpVideo_01.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
